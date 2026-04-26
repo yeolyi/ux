@@ -30,7 +30,6 @@ const TERMS: Term[] = [
 
 const PROBLEM_LATEX =
   "a_{n+1} = \\begin{cases} a_n / 2 & a_n \\text{ 가 짝수} \\\\ 3a_n + 1 & a_n \\text{ 가 홀수} \\end{cases}"
-const ANSWER = 0
 
 function Tex({
   expr,
@@ -55,7 +54,8 @@ export default function TermsRejection() {
   const [checked, setChecked] = useState<Record<string, boolean>>({})
   const [examOpen, setExamOpen] = useState(false)
   const [answer, setAnswer] = useState("")
-  const [attempted, setAttempted] = useState(false)
+  const [verifying, setVerifying] = useState(false)
+  const [rejected, setRejected] = useState(false)
   const [done, setDone] = useState(false)
   const examInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -69,7 +69,8 @@ export default function TermsRejection() {
   const submit = () => {
     if (!requiredOk) return
     if (optionalRejectedCount > 0) {
-      setAttempted(false)
+      setRejected(false)
+      setVerifying(false)
       setAnswer("")
       setExamOpen(true)
       setTimeout(() => examInputRef.current?.focus(), 50)
@@ -85,10 +86,13 @@ export default function TermsRejection() {
   }
 
   const submitAnswer = () => {
-    setAttempted(true)
-    if (Number(answer.trim()) === ANSWER) {
-      completeSignup()
-    }
+    if (!answer.trim() || verifying) return
+    setRejected(false)
+    setVerifying(true)
+    setTimeout(() => {
+      setVerifying(false)
+      setRejected(true)
+    }, 1600)
   }
 
   const acceptAll = () => {
@@ -214,15 +218,26 @@ export default function TermsRejection() {
               ref={examInputRef}
               inputMode="numeric"
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              onChange={(e) => {
+                setAnswer(e.target.value)
+                setRejected(false)
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") submitAnswer()
               }}
+              disabled={verifying}
               className="font-mono text-lg"
             />
-            {attempted && Number(answer.trim()) !== ANSWER && (
+            {verifying && (
+              <p className="text-xs text-muted-foreground">
+                답안 검증 중...
+              </p>
+            )}
+            {rejected && !verifying && (
               <p className="text-xs text-destructive">
-                답이 일치하지 않습니다. 다시 한번 검토해주세요.
+                본 문제는 현재 수학계 미해결 추측이므로 제출하신 답안의
+                정합성을 검증할 수 없습니다. 추후 증명이 완료되는 대로 재
+                검토 예정입니다.
               </p>
             )}
           </div>
@@ -239,10 +254,10 @@ export default function TermsRejection() {
             <Button
               type="button"
               onClick={submitAnswer}
-              disabled={!answer.trim()}
+              disabled={!answer.trim() || verifying}
               className="w-full sm:w-auto"
             >
-              제출
+              {verifying ? "검증 중..." : "제출"}
             </Button>
           </DialogFooter>
         </DialogContent>
