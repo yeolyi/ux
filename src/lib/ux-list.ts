@@ -29,4 +29,10 @@ export const uxList: UxItem[] = [
     description:
       "선택 약관에 동의하지 않으려면 분석적 사고 능력 확인을 위한 미적분 문제를 풀어야 한다.",
   },
+  {
+    slug: "yes-bot",
+    title: "맞장구 챗봇",
+    description:
+      "무엇을 물어봐도 영양가 없는 추임새와 공감만 돌려주는 ChatGPT 풍 UI.",
+  },
 ]
