@@ -96,13 +96,6 @@ export default function NovelKeyboard({ appkey }: Props) {
 
   const append = (ch: string) => setQuery((q) => q + ch)
   const backspace = () => setQuery((q) => q.slice(0, -1))
-  const space = () => setQuery((q) => q + " ")
-  const clear = () => {
-    setQuery("")
-    setResults(null)
-    setSearchError(null)
-    clearMarkers()
-  }
 
   const tokens = useMemo(() => Array.from(memilText), [])
 
@@ -130,14 +123,8 @@ export default function NovelKeyboard({ appkey }: Props) {
             )}
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="outline" onClick={space}>
-              공백
-            </Button>
             <Button size="sm" variant="outline" onClick={backspace}>
               ⌫
-            </Button>
-            <Button size="sm" variant="ghost" onClick={clear}>
-              지우기
             </Button>
             <Button
               size="sm"
@@ -199,7 +186,7 @@ export default function NovelKeyboard({ appkey }: Props) {
           <div className="text-base leading-loose break-keep whitespace-pre-wrap">
             {tokens.map((ch, i) => {
               if (ch === "\n") return <br key={i} />
-              if (/\s/.test(ch)) return <span key={i}>{ch}</span>
+              const isSpace = ch === " "
               return (
                 <button
                   key={i}
@@ -213,9 +200,12 @@ export default function NovelKeyboard({ appkey }: Props) {
                   onBlur={() =>
                     setHoverChar((h) => (h === ch ? null : h))
                   }
-                  className="inline-block rounded-sm px-px transition-all duration-100 hover:-translate-y-0.5 hover:scale-125 hover:bg-primary hover:text-primary-foreground hover:shadow-sm focus-visible:-translate-y-0.5 focus-visible:scale-125 focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:outline-none active:scale-110"
+                  className={
+                    "inline-block rounded-sm transition-all duration-100 hover:-translate-y-0.5 hover:scale-125 hover:bg-primary hover:text-primary-foreground hover:shadow-sm focus-visible:-translate-y-0.5 focus-visible:scale-125 focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:outline-none active:scale-110 " +
+                    (isSpace ? "px-1" : "px-px")
+                  }
                 >
-                  {ch}
+                  {isSpace ? " " : ch}
                 </button>
               )
             })}
