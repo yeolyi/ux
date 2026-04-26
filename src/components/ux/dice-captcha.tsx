@@ -42,9 +42,8 @@ export default function DiceCaptcha() {
           container: `#${CONTAINER_ID}`,
           assetPath: ASSET_PATH,
           theme: "default",
-          scale: 10,
+          scale: 16,
           enableShadows: true,
-          throwForce: 8,
         })
         dice.onRollComplete = (results: RollGroup[]) => {
           const sorted = [...results].sort(
@@ -117,7 +116,10 @@ export default function DiceCaptcha() {
         </div>
 
         <div className="relative overflow-hidden rounded-lg bg-gradient-to-b from-zinc-900 to-zinc-800 ring-1 ring-foreground/10">
-          <div id={CONTAINER_ID} className="h-[440px] w-full" />
+          <div
+            id={CONTAINER_ID}
+            className="mx-auto aspect-square w-full max-w-[480px]"
+          />
           {!ready && !error && (
             <div className="absolute inset-0 grid place-items-center text-sm text-white/70">
               주사위 준비 중...
