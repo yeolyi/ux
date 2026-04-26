@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from "react"
-import { Sparkles, ArrowUp, Plus } from "lucide-react"
+import { Sparkles, ArrowUp, RotateCcw, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   isQuestion,
   pickRandom,
@@ -15,7 +22,7 @@ type Message = {
   content: string
 }
 
-const MODEL_LABEL = "GPT-맞장구"
+const MODEL_LABEL = "맞장구 봇"
 
 export default function YesBot() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -48,7 +55,7 @@ export default function YesBot() {
     const reply = pickRandom(pool, lastReplyRef.current)
     lastReplyRef.current = reply
 
-    const delay = 500 + Math.random() * 700
+    const delay = 600 + Math.random() * 700
     setTimeout(() => {
       setMessages((m) => [
         ...m,
@@ -58,7 +65,7 @@ export default function YesBot() {
     }, delay)
   }
 
-  const newChat = () => {
+  const reset = () => {
     setMessages([])
     setInput("")
     setPending(false)
@@ -76,101 +83,118 @@ export default function YesBot() {
   const empty = messages.length === 0
 
   return (
-    <div className="flex h-[640px] flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
-      <header className="flex items-center justify-between border-b border-foreground/10 px-4 py-2.5">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <Sparkles className="size-4" />
-          {MODEL_LABEL}
-        </div>
-        <Button size="sm" variant="ghost" onClick={newChat}>
-          <Plus className="mr-1 size-4" /> 새 대화
-        </Button>
-      </header>
+    <Card className="overflow-hidden">
+      <CardHeader className="border-b border-foreground/10 pb-4">
+        <CardTitle className="flex items-center justify-between">
+          <span className="flex items-center gap-2 text-sm font-medium">
+            <span className="grid size-7 place-items-center rounded-full bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200">
+              <Sparkles className="size-3.5" />
+            </span>
+            {MODEL_LABEL}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={reset}
+            disabled={empty && !input}
+          >
+            <RotateCcw className="mr-1 size-3.5" />
+            새 대화
+          </Button>
+        </CardTitle>
+      </CardHeader>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        {empty ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2 px-6 text-center">
-            <h2 className="font-heading text-xl font-medium">
-              무엇이든 물어보세요
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {MODEL_LABEL} 가 곁에서 도와드릴게요.
-            </p>
-          </div>
-        ) : (
-          <ul className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-6">
-            {messages.map((m) =>
+      <CardContent className="flex flex-col gap-4 p-0">
+        <div
+          ref={scrollRef}
+          className="flex h-[480px] flex-col gap-5 overflow-y-auto px-6 py-6"
+        >
+          {empty ? (
+            <div className="flex flex-1 flex-col items-center justify-center gap-1.5 text-center">
+              <h3 className="font-heading text-lg font-medium">
+                무엇이든 물어보세요
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {MODEL_LABEL} 가 곁에서 도와드릴게요.
+              </p>
+            </div>
+          ) : (
+            messages.map((m) =>
               m.role === "user" ? (
-                <li key={m.id} className="flex justify-end">
-                  <div className="max-w-[80%] rounded-2xl bg-primary px-4 py-2.5 text-sm whitespace-pre-wrap text-primary-foreground">
+                <div key={m.id} className="flex justify-end gap-3">
+                  <div className="max-w-[78%] rounded-2xl rounded-br-sm bg-primary px-4 py-2.5 text-sm whitespace-pre-wrap text-primary-foreground">
                     {m.content}
                   </div>
-                </li>
+                  <Avatar size="sm">
+                    <AvatarFallback>
+                      <User className="size-3.5" />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
               ) : (
-                <li key={m.id} className="flex gap-3">
-                  <Avatar />
-                  <div className="flex-1 pt-0.5 text-sm leading-relaxed whitespace-pre-wrap">
+                <div key={m.id} className="flex gap-3">
+                  <Avatar size="sm">
+                    <AvatarFallback className="bg-emerald-100 text-emerald-700">
+                      <Sparkles className="size-3.5" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="max-w-[78%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap">
                     <RichText text={m.content} />
                   </div>
-                </li>
-              )
-            )}
-            {pending && (
-              <li className="flex gap-3">
-                <Avatar />
-                <div className="flex items-center gap-1 pt-2">
-                  <Dot delay={0} />
-                  <Dot delay={150} />
-                  <Dot delay={300} />
                 </div>
-              </li>
-            )}
-          </ul>
-        )}
-      </div>
-
-      <div className="border-t border-foreground/10 px-4 py-3">
-        <div className="mx-auto flex max-w-2xl items-end gap-2 rounded-2xl bg-background p-2 ring-1 ring-foreground/15 focus-within:ring-foreground/30">
-          <Textarea
-            ref={taRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKeyDown}
-            placeholder="메시지 보내기..."
-            rows={1}
-            className="max-h-40 min-h-9 flex-1 resize-none border-0 bg-transparent px-2 py-1.5 text-sm shadow-none ring-0 focus-visible:ring-0"
-          />
-          <Button
-            size="icon-sm"
-            onClick={send}
-            disabled={!input.trim() || pending}
-            className="rounded-full"
-            aria-label="보내기"
-          >
-            <ArrowUp className="size-4" />
-          </Button>
+              )
+            )
+          )}
+          {pending && (
+            <div className="flex gap-3">
+              <Avatar size="sm">
+                <AvatarFallback className="bg-emerald-100 text-emerald-700">
+                  <Sparkles className="size-3.5" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-muted px-4 py-3">
+                <Dot delay={0} />
+                <Dot delay={150} />
+                <Dot delay={300} />
+              </div>
+            </div>
+          )}
         </div>
-        <p className="mt-2 text-center text-[11px] text-muted-foreground">
-          {MODEL_LABEL} 는 실수를 할 수 있습니다. 중요한 정보는 직접
-          확인하세요.
-        </p>
-      </div>
-    </div>
-  )
-}
 
-function Avatar() {
-  return (
-    <div className="grid size-8 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200">
-      <Sparkles className="size-4" />
-    </div>
+        <div className="border-t border-foreground/10 bg-muted/30 p-3">
+          <div className="flex items-end gap-2">
+            <Textarea
+              ref={taRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={onKeyDown}
+              placeholder="메시지 보내기"
+              rows={1}
+              className="max-h-40 min-h-9 flex-1 resize-none bg-background py-2"
+            />
+            <Button
+              size="icon"
+              onClick={send}
+              disabled={!input.trim() || pending}
+              aria-label="보내기"
+            >
+              <ArrowUp className="size-4" />
+            </Button>
+          </div>
+          <p className="mt-2 text-center text-[11px] text-muted-foreground">
+            {MODEL_LABEL} 는 실수를 할 수 있습니다. 중요한 정보는 직접
+            확인하세요.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
 function Dot({ delay }: { delay: number }) {
   return (
     <span
-      className="size-1.5 animate-pulse rounded-full bg-foreground/40"
+      className="inline-block size-1.5 animate-pulse rounded-full bg-foreground/40"
       style={{ animationDelay: `${delay}ms`, animationDuration: "900ms" }}
     />
   )
