@@ -23,4 +23,10 @@ export const uxList: UxItem[] = [
     description:
       "버튼을 누르면 4개의 주사위가 굴러 보안문자가 만들어진다. 다시 굴리거나 확인.",
   },
+  {
+    slug: "terms-rejection",
+    title: "약관 거절 시험",
+    description:
+      "선택 약관에 동의하지 않으려면 분석적 사고 능력 확인을 위한 미적분 문제를 풀어야 한다.",
+  },
 ]
