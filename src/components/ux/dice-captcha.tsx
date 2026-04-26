@@ -42,7 +42,7 @@ export default function DiceCaptcha() {
           container: `#${CONTAINER_ID}`,
           assetPath: ASSET_PATH,
           theme: "default",
-          scale: 16,
+          scale: 8,
           enableShadows: true,
         })
         dice.onRollComplete = (results: RollGroup[]) => {
