@@ -41,4 +41,10 @@ export const uxList: UxItem[] = [
     description:
       "모바일 자이로로 기기를 기울여 음악 볼륨을 조절. 데스크탑에서는 안내만 표시.",
   },
+  {
+    slug: "calculator-paywall",
+    title: "구독 계산기",
+    description:
+      "iOS 풍 계산기. 입력은 자유롭게 되지만 = 누르면 결제하라는 모달이 뜬다.",
+  },
 ]
