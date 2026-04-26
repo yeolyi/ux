@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
-
-declare global {
-  interface Window {
-    kakao: any
-  }
-}
+import { loadKakaoSdk } from "@/lib/kakao"
 
 const DEFAULT_LAT = 37.5665
 const DEFAULT_LNG = 126.978
@@ -15,30 +10,6 @@ const DEFAULT_LEVEL = 3
 const SEOUL = { lat: DEFAULT_LAT, lng: DEFAULT_LNG }
 const BUSAN = { lat: 35.1796, lng: 129.0756 }
 const JEJU = { lat: 33.4996, lng: 126.5312 }
-
-function loadKakaoSdk(appkey: string): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve()
-  if (window.kakao?.maps) return Promise.resolve()
-  return new Promise((resolve, reject) => {
-    const existing = document.getElementById(
-      "kakao-maps-sdk"
-    ) as HTMLScriptElement | null
-    const onReady = () =>
-      window.kakao.maps.load(() => resolve())
-    if (existing) {
-      if (window.kakao?.maps) onReady()
-      else existing.addEventListener("load", onReady, { once: true })
-      return
-    }
-    const script = document.createElement("script")
-    script.id = "kakao-maps-sdk"
-    script.async = true
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appkey}&autoload=false`
-    script.onload = onReady
-    script.onerror = () => reject(new Error("Kakao Maps SDK 로드 실패"))
-    document.head.appendChild(script)
-  })
-}
 
 type Props = { appkey: string }
 

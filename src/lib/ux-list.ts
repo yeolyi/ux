@@ -11,4 +11,10 @@ export const uxList: UxItem[] = [
     description:
       "지도 자체로는 조작할 수 없고, 아래의 위도·경도·줌 슬라이더로만 이동하는 카카오 지도",
   },
+  {
+    slug: "novel-keyboard",
+    title: "소설 키보드",
+    description:
+      "이효석 「메밀꽃 필 무렵」 본문의 글자를 눌러 검색어를 만들고, 카카오 키워드 검색으로 지도에 표시",
+  },
 ]

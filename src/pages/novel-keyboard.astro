@@ -1,0 +1,18 @@
+---
+import Layout from "@/layouts/main.astro"
+import NovelKeyboardView from "@/components/ux/novel-keyboard"
+
+const appkey = import.meta.env.PUBLIC_KAKAO_MAP_KEY ?? ""
+---
+
+<Layout>
+  <main class="mx-auto max-w-2xl p-6">
+    <header class="mb-6">
+      <a href="/" class="text-xs text-muted-foreground hover:text-foreground">
+        ← 목록으로
+      </a>
+    </header>
+
+    <NovelKeyboardView client:only="react" appkey={appkey} />
+  </main>
+</Layout>
