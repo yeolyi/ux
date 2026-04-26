@@ -109,7 +109,7 @@ export default function CoordMap({ appkey }: Props) {
       <div className="relative overflow-hidden rounded-xl ring-1 ring-foreground/10">
         <div
           ref={mapElRef}
-          className="h-[420px] w-full bg-muted [&_*]:pointer-events-none"
+          className="h-[420px] w-full cursor-not-allowed bg-muted [&_*]:pointer-events-none"
         />
         {!ready && !error && (
           <div className="absolute inset-0 grid place-items-center text-sm text-muted-foreground">
