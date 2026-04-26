@@ -1,0 +1,1029 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    sans-serif;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh;
+  padding: 20px;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+/* 계산기 메인 컨테이너 */
+.calculator {
+  background-color: #000;
+  border-radius: 30px;
+  padding: 30px 20px 20px 20px;
+  width: 350px;
+  max-width: 100%;
+  border: 1px solid #333;
+}
+
+/* 디스플레이 영역 */
+.display {
+  margin-bottom: 30px;
+  text-align: right;
+  color: white;
+  padding: 0 10px;
+}
+
+.calculation {
+  font-size: 24px;
+  color: #8e8e93;
+  min-height: 30px;
+  margin-bottom: 10px;
+}
+
+.result {
+  font-size: 64px;
+  font-weight: 300;
+  line-height: 1;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* 버튼 그리드 */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* 기본 버튼 스타일 */
+.btn {
+  border: none;
+  border-radius: 50%;
+  font-size: 32px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  height: 70px;
+  width: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 숫자 버튼 */
+.btn.number {
+  background-color: #333333;
+  color: white;
+}
+
+.btn.number:hover {
+  background-color: #404040;
+}
+
+.btn.number:active {
+  transform: scale(0.95);
+  background-color: #262626;
+}
+
+/* 기능 버튼 (AC, %, +/-, ⌫) */
+.btn.function {
+  background-color: #a6a6a6;
+  color: black;
+  font-size: 28px;
+}
+
+.btn.function:hover {
+  background-color: #b8b8b8;
+}
+
+.btn.function:active {
+  transform: scale(0.95);
+  background-color: #949494;
+}
+
+/* 연산자 버튼 */
+.btn.operator {
+  background-color: #ff9500;
+  color: white;
+}
+
+.btn.operator:hover {
+  background-color: #ffad33;
+}
+
+.btn.operator:active {
+  transform: scale(0.95);
+  background-color: #e6851a;
+}
+
+.btn.operator.active {
+  background-color: white;
+  color: #ff9500;
+}
+
+/* 결제 모달 */
+.payment-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.payment-modal.show {
+  display: flex;
+}
+
+.payment-content {
+  position: relative;
+  background-color: #1c1c1e;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  animation: slideUp 0.3s ease;
+  border: 1px solid #333;
+}
+
+.payment-step {
+  text-align: center;
+}
+
+.payment-step.hidden {
+  display: none;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #8e8e93;
+  padding: 5px;
+  line-height: 1;
+}
+
+.close-modal:hover {
+  color: #fff;
+}
+
+/* 모달 헤더 */
+.modal-header {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.modal-header.centered {
+  text-align: center;
+}
+
+.modal-header h2 {
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.modal-subtitle {
+  margin: 0;
+  color: #8e8e93;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* 플랜 선택 */
+h2 {
+  margin-bottom: 30px;
+  color: #ffffff;
+  font-size: 24px;
+}
+
+.plans {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.plan {
+  position: relative;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  background-color: #2c2c2e;
+}
+
+.plan:hover {
+  border-color: #ff9500;
+}
+
+.plan.selected {
+  border-color: #ff9500;
+  background-color: rgba(255, 149, 0, 0.1);
+}
+
+.plan h3 {
+  margin-bottom: 8px;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.plan .price {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff9500;
+  margin-bottom: 5px;
+}
+
+.plan .description {
+  color: #8e8e93;
+  font-size: 14px;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: 15px;
+  background-color: #ff9500;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* 결제 방법 */
+.selected-plan {
+  background-color: #2c2c2e;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  text-align: left;
+  border: 1px solid #333;
+}
+
+.selected-plan h4 {
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.selected-plan p {
+  color: #8e8e93;
+  margin: 4px 0;
+}
+
+.selected-plan strong {
+  color: #ff9500;
+}
+
+/* 감지된 카드 정보 */
+.detected-card {
+  margin-bottom: 30px;
+}
+
+.card-info {
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #2c2c2e;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.card-icon {
+  font-size: 32px;
+  min-width: 40px;
+}
+
+.card-details {
+  flex: 1;
+}
+
+.card-name {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-number {
+  color: #8e8e93;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.card-type {
+  color: #8e8e93;
+  font-size: 12px;
+}
+
+.card-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-icon {
+  color: #34c759;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 버튼들 */
+.continue-btn,
+.pay-btn,
+.close-btn {
+  background-color: #ff9500;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.continue-btn:hover,
+.pay-btn:hover,
+.close-btn:hover {
+  background-color: #e6851a;
+}
+
+.continue-btn:disabled,
+.pay-btn:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+/* 버튼 로딩 상태 */
+.pay-btn.loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pay-btn.loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.cancel-primary-btn.loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.cancel-primary-btn.loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.payment-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.back-btn {
+  background-color: #2c2c2e;
+  color: #ffffff;
+  border: 1px solid #333;
+  border-radius: 25px;
+  padding: 15px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #3c3c3e;
+}
+
+.back-btn:disabled {
+  background-color: #666;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* 로딩 스피너 */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #333;
+  border-top: 4px solid #ff9500;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px auto;
+}
+
+#payment-processing h2,
+#payment-processing p {
+  color: #ffffff;
+}
+
+#payment-success h2,
+#payment-success p {
+  color: #ffffff;
+}
+
+/* 성공 아이콘 */
+.success-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 구독 상태 표시 */
+.payment-status {
+  margin-bottom: 15px;
+}
+
+.cancel-subscription-btn {
+  background-color: transparent;
+  color: #ff9500;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cancel-subscription-btn:hover {
+  opacity: 0.7;
+}
+
+.cancel-subscription-btn:active {
+  opacity: 0.5;
+}
+
+/* 구독해지 모달 경고 섹션 */
+.cancel-warning {
+  background-color: #2c2c2e;
+  border: 2px solid #ff3b30;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 15px;
+  text-align: left;
+}
+
+.warning-icon {
+  font-size: 32px;
+  min-width: 40px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-title {
+  color: #ff3b30;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.warning-text {
+  color: #8e8e93;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.warning-text:last-child {
+  margin-bottom: 0;
+}
+
+/* 해지 이유 선택 */
+.cancel-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.reason-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background-color: #2c2c2e;
+  border: 2px solid #333;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reason-option:hover {
+  border-color: #ff9500;
+  background-color: rgba(255, 149, 0, 0.05);
+}
+
+.reason-option input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #ff9500;
+}
+
+.reason-option span {
+  color: #ffffff;
+  font-size: 14px;
+  flex: 1;
+}
+
+.reason-option input[type="radio"]:checked + span {
+  color: #ff9500;
+  font-weight: 600;
+}
+
+/* 할인 제안 */
+.discount-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.discount-offer {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 149, 0, 0.15) 0%,
+    rgba(255, 149, 0, 0.05) 100%
+  );
+  border: 2px solid #ff9500;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+}
+
+.discount-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background-color: #ff3b30;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.discount-text {
+  color: #ffffff;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.discount-text strong {
+  color: #ff9500;
+  font-size: 24px;
+}
+
+.discount-subtext {
+  color: #8e8e93;
+  font-size: 13px;
+}
+
+/* 다크 패턴 버튼 스타일 */
+.cancel-primary-btn {
+  flex: 1.5;
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.cancel-secondary-btn {
+  flex: 1;
+  font-size: 14px;
+  background-color: #2c2c2e !important;
+  color: #8e8e93 !important;
+  border: 1px solid #333 !important;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.cancel-secondary-btn:hover {
+  background-color: #3c3c3e !important;
+  color: #ffffff !important;
+}
+
+.discount-buttons {
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+.discount-buttons .cancel-primary-btn {
+  flex: 1;
+  min-width: 140px;
+}
+
+.discount-buttons .cancel-secondary-btn {
+  flex: 0.8;
+  min-width: 100px;
+}
+
+#confirm-cancel {
+  background-color: #2c2c2e !important;
+  color: #8e8e93 !important;
+  border: 1px solid #333 !important;
+  font-size: 13px;
+  padding: 12px 20px;
+}
+
+#confirm-cancel:hover {
+  background-color: #3c3c3e !important;
+  color: #ffffff !important;
+}
+
+/* 네트워크 오류 모달 */
+.error-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  background-color: #2c2c2e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.error-text {
+  color: #8e8e93;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.error-text:last-child {
+  margin-bottom: 0;
+}
+
+.error-buttons {
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+#network-error-modal .payment-step {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* 해지 약관 동의 */
+.terms-container {
+  background-color: #2c2c2e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  max-height: 400px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.terms-content {
+  color: #8e8e93;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.terms-content h3 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 12px;
+}
+
+.terms-content h3:first-child {
+  margin-top: 0;
+}
+
+.terms-content p {
+  margin-bottom: 15px;
+  color: #8e8e93;
+}
+
+.terms-end-marker {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+  color: #ff9500;
+  font-weight: 600;
+  text-align: center;
+  font-size: 14px;
+}
+
+.terms-checkbox-container {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.terms-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.terms-checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #ff9500;
+}
+
+.terms-checkbox-label input[type="checkbox"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.terms-checkbox-label span {
+  user-select: none;
+}
+
+/* 약관 스크롤바 스타일 */
+.terms-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terms-container::-webkit-scrollbar-track {
+  background: #1c1c1e;
+  border-radius: 4px;
+}
+
+.terms-container::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.terms-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 개발자 링크 */
+.dev-link {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  text-decoration: none;
+  color: #8e8e93;
+  font-size: 12px;
+  padding: 8px 12px;
+  background-color: rgba(28, 28, 30, 0.8);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  z-index: 998;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(142, 142, 147, 0.2);
+}
+
+.dev-link:hover {
+  color: #ffffff;
+  background-color: rgba(28, 28, 30, 0.95);
+  border-color: rgba(142, 142, 147, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  .calculator {
+    width: 100%;
+    max-width: 320px;
+    padding: 20px 15px 15px 15px;
+  }
+
+  .display {
+    margin-bottom: 25px;
+    padding: 0 5px;
+  }
+
+  .calculation {
+    font-size: 20px;
+    min-height: 25px;
+    margin-bottom: 8px;
+  }
+
+  .result {
+    font-size: 48px;
+    min-height: 60px;
+  }
+
+  .btn {
+    height: 65px;
+    width: 65px;
+    font-size: 28px;
+  }
+
+  .btn.function {
+    font-size: 24px;
+  }
+
+  .buttons {
+    gap: 10px;
+  }
+
+  .payment-content {
+    width: 95%;
+    padding: 25px 20px;
+    margin: 5% auto;
+  }
+
+  .modal-header {
+    margin-bottom: 25px;
+  }
+
+  .modal-header h2 {
+    font-size: 22px;
+  }
+
+  .modal-subtitle {
+    font-size: 13px;
+  }
+
+  .plans {
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .plan {
+    padding: 18px;
+  }
+
+  .plan h3 {
+    font-size: 16px;
+  }
+
+  .plan .price {
+    font-size: 20px;
+  }
+
+  .plan .description {
+    font-size: 13px;
+  }
+
+  .card-info {
+    padding: 18px;
+    gap: 12px;
+  }
+
+  .card-name {
+    font-size: 15px;
+  }
+
+  .card-number {
+    font-size: 13px;
+  }
+
+  .card-type {
+    font-size: 11px;
+  }
+
+  .selected-plan {
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  .payment-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .continue-btn,
+  .pay-btn,
+  .close-btn,
+  .back-btn {
+    padding: 12px 25px;
+    font-size: 15px;
+  }
+
+  .success-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+  }
+
+  .payment-status > div {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .cancel-subscription-btn {
+    white-space: nowrap;
+  }
+
+  .dev-link {
+    bottom: 10px;
+    right: 10px;
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .calculator {
+    max-width: 280px;
+  }
+
+  .btn {
+    height: 60px;
+    width: 60px;
+    font-size: 26px;
+  }
+
+  .btn.function {
+    font-size: 22px;
+  }
+
+  .result {
+    font-size: 42px;
+  }
+
+  .payment-content {
+    padding: 20px 15px;
+  }
+}

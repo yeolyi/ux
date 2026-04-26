@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/main.astro"
-import CalculatorPaywallView from "@/components/ux/calculator-paywall"
 ---
 
 <Layout>
@@ -11,6 +10,14 @@ import CalculatorPaywallView from "@/components/ux/calculator-paywall"
       </a>
     </header>
 
-    <CalculatorPaywallView client:only="react" />
+    <div class="overflow-hidden rounded-xl ring-1 ring-foreground/10">
+      <iframe
+        src="/calculator/index.html"
+        title="구독 계산기"
+        class="block h-[760px] w-full border-0 bg-black"
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-forms"
+      ></iframe>
+    </div>
   </main>
 </Layout>
