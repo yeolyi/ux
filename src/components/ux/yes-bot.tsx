@@ -22,7 +22,8 @@ type Message = {
   content: string
 }
 
-const MODEL_LABEL = "맞장구 봇"
+const MODEL_LABEL = "Aurora"
+const MODEL_VERSION = "1.2"
 
 export default function YesBot() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -87,10 +88,15 @@ export default function YesBot() {
       <CardHeader className="border-b border-foreground/10 pb-4">
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-sm font-medium">
-            <span className="grid size-7 place-items-center rounded-full bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200">
+            <span className="grid size-7 place-items-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-sm">
               <Sparkles className="size-3.5" />
             </span>
-            {MODEL_LABEL}
+            <span className="flex items-baseline gap-1.5">
+              {MODEL_LABEL}
+              <span className="rounded-sm bg-muted px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground">
+                {MODEL_VERSION}
+              </span>
+            </span>
           </span>
           <Button
             size="sm"
@@ -111,11 +117,14 @@ export default function YesBot() {
         >
           {empty ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-1.5 text-center">
+              <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-md">
+                <Sparkles className="size-5" />
+              </span>
               <h3 className="font-heading text-lg font-medium">
-                무엇이든 물어보세요
+                안녕하세요, 저는 {MODEL_LABEL} 입니다.
               </h3>
               <p className="text-sm text-muted-foreground">
-                {MODEL_LABEL} 가 곁에서 도와드릴게요.
+                무엇이든 편하게 물어봐 주세요.
               </p>
             </div>
           ) : (
@@ -134,7 +143,7 @@ export default function YesBot() {
               ) : (
                 <div key={m.id} className="flex gap-3">
                   <Avatar size="sm">
-                    <AvatarFallback className="bg-emerald-100 text-emerald-700">
+                    <AvatarFallback className="bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white">
                       <Sparkles className="size-3.5" />
                     </AvatarFallback>
                   </Avatar>
@@ -182,8 +191,8 @@ export default function YesBot() {
             </Button>
           </div>
           <p className="mt-2 text-center text-[11px] text-muted-foreground">
-            {MODEL_LABEL} 는 실수를 할 수 있습니다. 중요한 정보는 직접
-            확인하세요.
+            {MODEL_LABEL} 는 부정확한 답을 할 수 있습니다. 중요한 정보는
+            반드시 다시 확인해주세요.
           </p>
         </div>
       </CardContent>
