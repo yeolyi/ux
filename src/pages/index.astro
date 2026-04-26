@@ -1,17 +1,40 @@
 ---
 import Layout from "@/layouts/main.astro"
-import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card"
+import { uxList } from "@/lib/ux-list"
 ---
 
 <Layout>
-  <div class="flex min-h-svh p-6">
-    <div class="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-      <div>
-        <h1 class="font-medium">Project ready!</h1>
-        <p>You may now add components and start building.</p>
-        <p>We've already added the button component for you.</p>
-        <Button client:load className="mt-2">Button</Button>
-      </div>
-    </div>
-  </div>
+  <main class="mx-auto max-w-2xl p-6">
+    <header class="mb-6">
+      <h1 class="font-heading text-2xl font-medium">UX 모음</h1>
+      <p class="text-sm text-muted-foreground">
+        쓰기 어려운 UX들을 모아둔 인덱스. row를 눌러 상세로 이동.
+      </p>
+    </header>
+    <ul class="flex flex-col gap-3">
+      {
+        uxList.map((item) => (
+          <li>
+            <a href={`/${item.slug}`} class="block">
+              <Card
+                size="sm"
+                className="transition-colors hover:bg-accent/40"
+              >
+                <CardHeader>
+                  <CardTitle>{item.title}</CardTitle>
+                  <CardDescription>{item.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
 </Layout>
