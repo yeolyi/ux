@@ -35,4 +35,10 @@ export const uxList: UxItem[] = [
     description:
       "무엇을 물어봐도 영양가 없는 추임새와 공감만 돌려주는 ChatGPT 풍 UI.",
   },
+  {
+    slug: "tilt-volume",
+    title: "기울여서 볼륨 조절",
+    description:
+      "모바일 자이로로 기기를 기울여 음악 볼륨을 조절. 데스크탑에서는 안내만 표시.",
+  },
 ]
