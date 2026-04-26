@@ -201,12 +201,12 @@ export default function TermsRejection() {
 
           <div className="flex flex-col gap-3 rounded-md bg-muted/50 px-4 py-5">
             <p className="text-xs text-muted-foreground">
-              임의의 양의 정수 a₀에 대해 다음과 같이 정의된 수열에서
+              자연수 a₀ 에서 출발해 다음과 같이 정의된 수열에서
             </p>
             <Tex expr={PROBLEM_LATEX} display />
             <p className="text-sm font-medium">
-              1에 도달하지 <span className="underline">않는</span> 자연수의
-              개수는?
+              수열이 1에 도달하지 <span className="underline">않는</span>{" "}
+              a₀ 의 개수는?
             </p>
           </div>
 
