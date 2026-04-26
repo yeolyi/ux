@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { loadKakaoSdk } from "@/lib/kakao"
 import { memilText } from "@/lib/novel-text"
 
@@ -21,6 +28,7 @@ export default function NovelKeyboard({ appkey }: Props) {
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [query, setQuery] = useState("")
+  const [hoverChar, setHoverChar] = useState<string | null>(null)
   const [results, setResults] = useState<PlaceResult[] | null>(null)
   const [searching, setSearching] = useState(false)
   const [searchError, setSearchError] = useState<string | null>(null)
@@ -100,41 +108,47 @@ export default function NovelKeyboard({ appkey }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2 rounded-xl bg-card p-4 ring-1 ring-foreground/10">
-        <div className="flex items-center gap-2">
-          <div
-            className="min-h-9 flex-1 rounded-md bg-background px-3 py-2 font-mono text-sm tracking-wide ring-1 ring-foreground/10"
-            aria-label="검색어"
-          >
-            {query ? (
-              <span>{query}</span>
-            ) : (
-              <span className="text-muted-foreground">
-                본문에서 글자를 눌러 검색어를 만들어보세요
+      <Card size="sm">
+        <CardContent className="flex flex-col gap-2">
+          <div className="relative">
+            <Input
+              readOnly
+              value={query}
+              className="font-mono text-base tracking-wide"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") search()
+              }}
+            />
+            {hoverChar && (
+              <span
+                aria-hidden
+                className="pointer-events-none absolute top-1/2 -translate-y-1/2 font-mono text-base text-muted-foreground/60"
+                style={{ left: `calc(0.75rem + ${query.length}ch)` }}
+              >
+                {hoverChar}
               </span>
             )}
-            <span className="ml-0.5 inline-block h-4 w-px animate-pulse bg-foreground align-middle" />
           </div>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" onClick={space}>
-            공백
-          </Button>
-          <Button size="sm" variant="outline" onClick={backspace}>
-            ⌫
-          </Button>
-          <Button size="sm" variant="ghost" onClick={clear}>
-            지우기
-          </Button>
-          <Button
-            size="sm"
-            onClick={search}
-            disabled={!ready || !query.trim() || searching}
-          >
-            {searching ? "검색 중..." : "검색"}
-          </Button>
-        </div>
-      </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={space}>
+              공백
+            </Button>
+            <Button size="sm" variant="outline" onClick={backspace}>
+              ⌫
+            </Button>
+            <Button size="sm" variant="ghost" onClick={clear}>
+              지우기
+            </Button>
+            <Button
+              size="sm"
+              onClick={search}
+              disabled={!ready || !query.trim() || searching}
+            >
+              {searching ? "검색 중..." : "검색"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="relative overflow-hidden rounded-xl ring-1 ring-foreground/10">
         <div ref={mapElRef} className="h-[360px] w-full bg-muted" />
@@ -151,49 +165,63 @@ export default function NovelKeyboard({ appkey }: Props) {
       </div>
 
       {results !== null && (
-        <div className="rounded-xl bg-card p-4 text-sm ring-1 ring-foreground/10">
-          {searchError ? (
-            <p className="text-destructive">{searchError}</p>
-          ) : results.length === 0 ? (
-            <p className="text-muted-foreground">
-              "{query}" 에 대한 결과가 없습니다.
-            </p>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {results.slice(0, 5).map((r) => (
-                <li key={r.id} className="flex flex-col">
-                  <span className="font-medium">{r.place_name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {r.road_address_name || r.address_name}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <Card size="sm">
+          <CardContent>
+            {searchError ? (
+              <p className="text-sm text-destructive">{searchError}</p>
+            ) : results.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                "{query}" 에 대한 결과가 없습니다.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-2 text-sm">
+                {results.slice(0, 5).map((r) => (
+                  <li key={r.id} className="flex flex-col">
+                    <span className="font-medium">{r.place_name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {r.road_address_name || r.address_name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
       )}
 
-      <div className="rounded-xl bg-card p-5 ring-1 ring-foreground/10">
-        <p className="mb-3 text-xs text-muted-foreground">
-          이효석 「메밀꽃 필 무렵」 — 글자를 눌러 입력
-        </p>
-        <div className="text-base leading-loose break-keep whitespace-pre-wrap">
-          {tokens.map((ch, i) => {
-            if (ch === "\n") return <br key={i} />
-            if (/\s/.test(ch)) return <span key={i}>{ch}</span>
-            return (
-              <button
-                key={i}
-                type="button"
-                onClick={() => append(ch)}
-                className="rounded-sm transition-colors hover:bg-primary/20 active:bg-primary/40"
-              >
-                {ch}
-              </button>
-            )
-          })}
-        </div>
-      </div>
+      <Card size="sm">
+        <CardHeader>
+          <CardTitle className="text-xs font-normal text-muted-foreground">
+            이효석 「메밀꽃 필 무렵」
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-base leading-loose break-keep whitespace-pre-wrap">
+            {tokens.map((ch, i) => {
+              if (ch === "\n") return <br key={i} />
+              if (/\s/.test(ch)) return <span key={i}>{ch}</span>
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => append(ch)}
+                  onMouseEnter={() => setHoverChar(ch)}
+                  onMouseLeave={() =>
+                    setHoverChar((h) => (h === ch ? null : h))
+                  }
+                  onFocus={() => setHoverChar(ch)}
+                  onBlur={() =>
+                    setHoverChar((h) => (h === ch ? null : h))
+                  }
+                  className="inline-block rounded-sm px-px transition-all duration-100 hover:-translate-y-0.5 hover:scale-125 hover:bg-primary hover:text-primary-foreground hover:shadow-sm focus-visible:-translate-y-0.5 focus-visible:scale-125 focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:outline-none active:scale-110"
+                >
+                  {ch}
+                </button>
+              )
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
