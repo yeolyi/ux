@@ -3,9 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 
-const ASSET_PATH =
-  "https://cdn.jsdelivr.net/npm/@3d-dice/dice-box@1.1.4/dist/assets/"
-
+const ASSET_PATH = "/dice-box/"
 const CONTAINER_ID = "dice-captcha-stage"
 
 type RollItem = { value: number; rolls?: { value: number }[] }
@@ -27,7 +25,8 @@ export default function DiceCaptcha() {
         const mod = await import("@3d-dice/dice-box")
         const DiceBox = mod.default
         if (cancelled) return
-        dice = new DiceBox(`#${CONTAINER_ID}`, {
+        dice = new DiceBox({
+          container: `#${CONTAINER_ID}`,
           assetPath: ASSET_PATH,
           theme: "default",
           themeColor: "#7c3aed",
