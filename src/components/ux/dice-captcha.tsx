@@ -60,7 +60,13 @@ export default function DiceCaptcha() {
         if (cancelled) return
         diceRef.current = dice
         setReady(true)
-        rollAll(dice)
+        // ensure canvas matches the laid-out container after CSS applies
+        requestAnimationFrame(() => {
+          try {
+            dice.resizeWorld?.()
+          } catch {}
+          rollAll(dice)
+        })
       } catch (e: any) {
         setError(e?.message ?? String(e))
       }
@@ -118,7 +124,7 @@ export default function DiceCaptcha() {
         <div className="relative overflow-hidden rounded-lg bg-gradient-to-b from-zinc-900 to-zinc-800 ring-1 ring-foreground/10">
           <div
             id={CONTAINER_ID}
-            className="mx-auto aspect-square w-full max-w-[480px]"
+            className="mx-auto aspect-square w-full max-w-[520px] [&>canvas]:!block [&>canvas]:!h-full [&>canvas]:!w-full"
           />
           {!ready && !error && (
             <div className="absolute inset-0 grid place-items-center text-sm text-white/70">
