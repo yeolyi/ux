@@ -11,10 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
-const TRACK_URL =
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-const TRACK_FALLBACK_URL =
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+const TRACK_URL = "/audio/sample.mp3"
 const TRACK_TITLE = "Sunset Drive"
 const TRACK_AUTHOR = "T. Schürger"
 
@@ -24,10 +21,11 @@ type TiltState = "unsupported" | "needs-permission" | "listening" | "no-events"
 
 export default function TiltVolume() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
+  const gainRef = useRef<GainNode | null>(null)
   const lastEventAtRef = useRef<number>(0)
-  const triedFallbackRef = useRef(false)
   const [tiltState, setTiltState] = useState<TiltState>("unsupported")
-  const [gamma, setGamma] = useState(0)
   const [volume, setVolume] = useState(0.5)
   const [playing, setPlaying] = useState(false)
   const [audioError, setAudioError] = useState(false)
@@ -55,15 +53,33 @@ export default function TiltVolume() {
   }, [])
 
   useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume
+    if (gainRef.current) {
+      gainRef.current.gain.value = volume
+    } else if (audioRef.current) {
+      audioRef.current.volume = volume
+    }
   }, [volume])
+
+  const ensureAudioGraph = () => {
+    if (!audioRef.current || sourceRef.current) return
+    const Ctx =
+      window.AudioContext || (window as any).webkitAudioContext
+    if (!Ctx) return
+    const ctx: AudioContext = new Ctx()
+    const source = ctx.createMediaElementSource(audioRef.current)
+    const gain = ctx.createGain()
+    gain.gain.value = volume
+    source.connect(gain).connect(ctx.destination)
+    audioCtxRef.current = ctx
+    sourceRef.current = source
+    gainRef.current = gain
+  }
 
   const onOrientation = (e: DeviceOrientationEvent) => {
     if (e.gamma == null) return
     lastEventAtRef.current = Date.now()
-    const g = e.gamma
-    setGamma(g)
-    const norm = Math.max(-TILT_RANGE, Math.min(TILT_RANGE, g)) / TILT_RANGE
+    const norm =
+      Math.max(-TILT_RANGE, Math.min(TILT_RANGE, e.gamma)) / TILT_RANGE
     setVolume((norm + 1) / 2)
   }
 
@@ -91,6 +107,10 @@ export default function TiltVolume() {
     const a = audioRef.current
     if (!a) return
     try {
+      ensureAudioGraph()
+      if (audioCtxRef.current?.state === "suspended") {
+        await audioCtxRef.current.resume()
+      }
       if (playing) a.pause()
       else await a.play()
     } catch {
@@ -99,14 +119,6 @@ export default function TiltVolume() {
   }
 
   const onAudioError = () => {
-    const a = audioRef.current
-    if (!a) return
-    if (!triedFallbackRef.current) {
-      triedFallbackRef.current = true
-      a.src = TRACK_FALLBACK_URL
-      a.load()
-      return
-    }
     setAudioError(true)
   }
 
