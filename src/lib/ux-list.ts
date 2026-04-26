@@ -17,4 +17,10 @@ export const uxList: UxItem[] = [
     description:
       "이효석 「메밀꽃 필 무렵」 본문의 글자를 눌러 검색어를 만들고, 카카오 키워드 검색으로 지도에 표시",
   },
+  {
+    slug: "dice-captcha",
+    title: "주사위 보안문자",
+    description:
+      "버튼을 누르면 4개의 주사위가 굴러 보안문자가 만들어진다. 다시 굴리거나 확인.",
+  },
 ]
