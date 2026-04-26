@@ -9,7 +9,24 @@ import "@/styles/global.css"
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Astro App</title>
   </head>
-  <body>
-    <slot />
+  <body class="flex min-h-svh flex-col">
+    <div class="flex-1">
+      <slot />
+    </div>
+    <footer
+      class="mt-12 border-t border-foreground/10 px-6 py-6 text-xs text-muted-foreground"
+    >
+      <div class="mx-auto flex max-w-2xl items-center justify-between">
+        <span>made by yeolyi</span>
+        <a
+          href="https://instagram.com/yeol.devv"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-foreground"
+        >
+          @yeol.devv
+        </a>
+      </div>
+    </footer>
   </body>
 </html>
