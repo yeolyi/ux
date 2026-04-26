@@ -14,12 +14,6 @@ const appkey = import.meta.env.PUBLIC_KAKAO_MAP_KEY ?? ""
       >
         ← 목록으로
       </a>
-      <h1 class="font-heading mt-2 text-2xl font-medium">
-        위도/경도 전용 지도
-      </h1>
-      <p class="text-sm text-muted-foreground">
-        지도 자체는 잠겨 있고, 아래 슬라이더와 입력으로만 좌표/줌을 변경.
-      </p>
     </header>
 
     <CoordMapView client:only="react" appkey={appkey} />
